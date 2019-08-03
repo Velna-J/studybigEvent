@@ -24,46 +24,112 @@
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">用户名称：</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control" id="inputEmail3" value="李思思">
+                        <input type="text" class="form-control" name="username" id="username1" value="李思思">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">昵称：</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control" id="inputEmail3" value="思思">
+                        <input type="text" class="form-control" name="nickname" id="nickname1" value="思思">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">邮箱：</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control" id="inputEmail3" value="lisisi@126.com">
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="inputPassword3" class="col-sm-2 control-label">用户图标：</label>
-                    <div class="col-sm-10">
-                        <img src="images/2.jpg" alt="" class="user_pic">
-                        <input type="file" id="exampleInputFile">
+                        <input type="text" class="form-control" name="email" id="email1" value="lisisi@126.com">
                     </div>
                 </div>
 
                 <div class="form-group">
-                        <label for="inputEmail3" class="col-sm-2 control-label">密码：</label>
-                        <div class="col-sm-4">
-                            <input type="password" class="form-control" id="inputEmail3" value="12345678">
-                        </div>
+                    <label for="inputPassword3" class="col-sm-2 control-label">用户图标：</label>
+                    <div class="col-sm-10">
+                        <img src="images/2.jpg" alt="" class="userPic1">
+                        <br>
+                        <input type="file" id="exampleInputFile" name="userPic" style="display: none">
+                        <label for="exampleInputFile"><img src="./images/3.png" alt=""></label>
                     </div>
-               
-    
+                </div>
+
+                <div class="form-group">
+                    <label for="inputEmail3" class="col-sm-2 control-label">密码：</label>
+                    <div class="col-sm-4">
+                        <input type="password" class="form-control" name="password" id="password1" value="12345678">
+                    </div>
+                </div>
+
+
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
-                        <button type="submit" class="btn btn-success">修改</button>
+                        <button type="submit" class="btn btn-success btn-xiugai">修改</button>
                     </div>
                 </div>
             </form>
         </div>
     </div>
+
+    <script>
+        // 需求分析:将登陆的信息显示在个人中心上
+        $(function () {
+            // 给图片一个预览效果
+            $('#exampleInputFile').on('change', function () {
+                // 获取这个文件
+                var file = this.files[0];
+                // 给文件添加一个路径
+                var url = URL.createObjectURL(file);
+                // 将路径赋值给图片
+                $('.user_pic').attr('src', url);
+
+            })
+
+            //发送ajax请求,将用户信息添加到个人用户上面
+            $.ajax({
+                url: 'http://localhost:8080/admin/user/detail',
+                success: function (backData) {
+                    // console.log(backData);
+                    // $('#username').val(backData.data.username)
+                    for (var key in backData.data) {
+                        $('input#' + key).val(backData.data[key]);
+                    }
+                    $('img.userPic1').attr('src', backData.data.userPic)
+                }
+
+            })
+
+
+
+            //修改用户信息,并且发送给后台,刷新首页的用户信息
+            $('.btn-xiugai').on('click',function(e){
+                e.preventDefault();
+            //    创建一个formdata对象
+            var fd = new FormData($('form')[0]);
+            // 发送ajax请求
+            $.ajax({
+                type:'post',
+                url:'http://localhost:8080/admin/user/edit',
+                data:fd,
+                contentType:false,
+                processData:false,
+                success:function(backData){
+                  console.log(backData);
+                  if(backData.code ==200){
+                      
+                  }
+                }
+            })
+            })
+
+
+
+
+
+
+
+
+
+        })
+
+
+    </script>
 
 </body>
 
